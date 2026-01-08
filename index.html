@@ -1,0 +1,2572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Amada Realty | The Sovereign Standard</title>
+
+  <!-- Dependencies -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              50: '#FBF7E7',
+              100: '#F6EECF',
+              200: '#ECDC9F',
+              300: '#E2CA6F',
+              400: '#D4AF37',
+              500: '#B89225',
+              600: '#99761A',
+              700: '#7A5E15',
+              800: '#5C4610',
+              900: '#3D2F0B',
+            },
+            obsidian: '#050505',
+            charcoal: '#121212',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+            display: ['Cinzel', 'serif'],
+          },
+          animation: {
+            float: 'float 6s ease-in-out infinite',
+            'fade-in': 'fadeIn 0.5s ease-out forwards',
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+          },
+          keyframes: {
+            float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root { --app-bg: #F5F5F7; }
+    body {
+      background-color: var(--app-bg);
+      color: #1d1d1f;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.4); }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #D4AF37 0%, #F4DF89 50%, #AA8C2C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .mac-window {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      border-radius: 24px;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+    }
+
+    /* Range styles */
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 32px; width: 32px; border-radius: 50%;
+      background: #D4AF37; cursor: pointer; margin-top: -14px;
+      box-shadow: 0 4px 12px rgba(212,175,55,0.4);
+      border: 4px solid white;
+      transition: transform 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%; height: 4px; cursor: pointer;
+      background: #E5E7EB; border-radius: 99px;
+    }
+
+    /* Double range (price) */
+    .range-wrap { position: relative; width: 100%; height: 32px; }
+    .range-wrap input[type=range] { position: absolute; left: 0; top: 0; pointer-events: none; }
+    .range-wrap input[type=range]::-webkit-slider-thumb { pointer-events: all; }
+    .range-track {
+      position: absolute; left: 0; top: 50%;
+      transform: translateY(-50%);
+      height: 4px; width: 100%;
+      background: #E5E7EB; border-radius: 999px;
+      overflow: hidden;
+    }
+    .range-fill {
+      position: absolute; top: 0; height: 100%;
+      background: #D4AF37;
+    }
+
+    .dashboard-grid { display: grid; grid-template-columns: 280px 1fr; height: 100vh; overflow: hidden; }
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .sidebar-desktop { display: none; }
+    }
+    .nav-item.active { background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.05); font-weight: 600; color: #000; }
+    .badge {
+      position: absolute; top: -5px; right: -5px;
+      background: #FF3B30; color: white;
+      font-size: 10px; font-weight: bold;
+      padding: 2px 6px; border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(255,59,48,0.3);
+    }
+    .chip { border: 1px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.8); }
+    .chip.active { background: #111; color: #fff; border-color: rgba(0,0,0,0.2); }
+    .skeleton {
+      background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.08), rgba(0,0,0,0.04));
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer { 0%{background-position: 200% 0} 100%{background-position: -200% 0} }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+
+<body class="selection:bg-gold-200 selection:text-black">
+
+  <!-- =========================================================================
+       LAYER 1: PUBLIC WEBSITE
+       ========================================================================= -->
+  <div id="public-site" class="transition-opacity duration-700">
+
+    <!-- LOADER -->
+    <div id="loader" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-1000">
+      <div class="relative">
+        <div class="w-24 h-24 border-4 border-gray-100 rounded-full animate-spin border-t-gold-400"></div>
+        <i class="fas fa-crown absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gold-500 text-2xl"></i>
+      </div>
+      <h1 class="font-display text-2xl mt-6 tracking-[0.3em] text-gray-900">AMADA</h1>
+      <p class="text-xs text-gray-400 mt-2 uppercase tracking-widest">Initializing Secure Environment...</p>
+    </div>
+
+    <!-- NAV BAR -->
+    <nav class="fixed top-0 w-full z-50 transition-all duration-300 px-4 md:px-6 py-4" id="main-nav">
+      <div class="max-w-7xl mx-auto mac-window !rounded-full px-6 md:px-8 py-3 flex justify-between items-center bg-white/90">
+        <a href="#" class="flex items-center gap-3 group" onclick="App.scrollToTop(event)">
+          <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center group-hover:bg-gold-500 transition-colors duration-500">
+            <i class="fas fa-gem text-lg"></i>
+          </div>
+          <span class="font-display font-bold text-xl tracking-widest text-gray-900 group-hover:text-gold-600 transition-colors">AMADA</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-8 font-sans text-sm font-medium text-gray-600">
+          <a href="#collection" class="hover:text-black transition">Collection</a>
+          <a href="#tiers" class="hover:text-black transition">Tiers</a>
+          <a href="#concierge" class="hover:text-black transition" onclick="App.openDashboard('concierge')">Concierge</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <button onclick="App.openDashboard('marketplace')" class="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition" title="Search Marketplace">
+            <i class="fas fa-search text-gray-500"></i>
+          </button>
+          <button onclick="App.openDashboard('overview')" class="bg-black text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:scale-105 transition-all shadow-lg">
+            Client Portal
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <div class="absolute inset-0 z-0">
+        <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-gold-200 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-float"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-100 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-float" style="animation-delay: 2s"></div>
+      </div>
+
+      <div class="container mx-auto px-4 z-10 text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-md border border-white/60 mb-8 animate-fade-in">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span class="text-xs uppercase tracking-widest font-semibold text-gray-600">Market Status: Bullish</span>
+        </div>
+
+        <h1 class="font-display text-5xl md:text-8xl font-bold text-gray-900 leading-[1.1] mb-8 animate-fade-in" style="animation-delay: 0.1s">
+          The Geometry of <br />
+          <span class="text-gradient-gold">Wealth.</span>
+        </h1>
+
+        <p class="font-sans font-light text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed animate-fade-in" style="animation-delay: 0.2s">
+          Jewelry that isn't just worn—it's deeded. Amada Realty fuses high-carat gemstones with prime real estate titles.
+          <span class="font-medium text-black">Wear your assets.</span>
+        </p>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-6 animate-fade-in" style="animation-delay: 0.3s">
+          <a href="#tiers" class="group relative px-8 py-4 bg-black text-white rounded-full overflow-hidden shadow-2xl">
+            <span class="absolute inset-0 w-full h-full bg-gold-500 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></span>
+            <span class="relative font-bold uppercase text-xs tracking-[0.2em] flex items-center gap-2">
+              Begin Acquisition <i class="fas fa-arrow-right"></i>
+            </span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- TIERS -->
+    <section id="tiers" class="py-32 bg-gray-50 relative overflow-hidden">
+      <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-16">
+          <h2 class="font-display text-4xl mb-4">The Hierarchy of Access</h2>
+          <p class="text-gray-500 font-light">Service levels adjust automatically to your capital commitment.</p>
+        </div>
+
+        <div class="mac-window p-8 md:p-12 max-w-5xl mx-auto bg-white/80">
+          <div class="mb-10 px-4">
+            <!-- Clickable Labels -->
+            <div class="flex justify-between text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 select-none">
+              <span class="cursor-pointer hover:text-gold-600 transition" onclick="App.setTier(1)">Entry</span>
+              <span class="cursor-pointer hover:text-gold-600 transition" onclick="App.setTier(3)">Exclusive</span>
+              <span class="cursor-pointer hover:text-gold-600 transition" onclick="App.setTier(5)">Sovereign</span>
+            </div>
+
+            <input type="range" id="tier-slider" min="1" max="5" value="1" step="1" oninput="App.updateTier(this.value)" />
+
+            <!-- Clickable Price Points (works on click, not just drag) -->
+            <div class="flex justify-between mt-4 font-display text-sm text-gray-900 select-none">
+              <button onclick="App.setTier(1)" class="hover:text-gold-600 transition focus:outline-none">₦100k</button>
+              <button onclick="App.setTier(2)" class="hover:text-gold-600 transition focus:outline-none">₦10M</button>
+              <button onclick="App.setTier(3)" class="hover:text-gold-600 transition focus:outline-none">₦50M</button>
+              <button onclick="App.setTier(4)" class="hover:text-gold-600 transition focus:outline-none">₦500M</button>
+              <button onclick="App.setTier(5)" class="hover:text-gold-600 transition focus:outline-none">₦5B+</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 px-4 mb-12">
+            <div class="glass-card p-4">
+              <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Your Tier</p>
+              <p class="font-display text-2xl mt-1" id="tier-mini-title">Entry</p>
+              <p class="text-sm text-gray-500 mt-2" id="tier-mini-desc">Tap a tier above or drag the slider.</p>
+            </div>
+            <div class="glass-card p-4">
+              <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Benefits</p>
+              <ul class="mt-3 space-y-2 text-sm text-gray-600" id="tier-mini-benefits"></ul>
+            </div>
+            <div class="glass-card p-4">
+              <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Instant Action</p>
+              <button onclick="App.handleTierAction(App.state.tier)" class="mt-4 w-full py-3 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-500 transition">
+                Continue
+              </button>
+              <p class="text-xs text-gray-400 mt-3">This demo persists your tier + profile + wallet in localStorage.</p>
+            </div>
+          </div>
+
+          <div id="tier-display" class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center transition-all duration-500"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLIC COLLECTION TEASER -->
+    <section id="collection" class="py-24 bg-white">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+          <div>
+            <h2 class="font-display text-4xl mb-2">Curated Assets</h2>
+            <p class="text-gray-500">Live inventory available for immediate securing.</p>
+          </div>
+          <button onclick="App.openDashboard('marketplace')" class="mt-4 md:mt-0 px-6 py-3 border border-gray-200 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition group">
+            Enter Marketplace <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="public-products-grid"></div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white pt-24 pb-12" id="concierge">
+      <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-800 pb-16">
+          <div class="col-span-1 md:col-span-2">
+            <span class="font-display text-2xl tracking-widest mb-6 block">AMADA</span>
+            <p class="text-gray-400 max-w-sm font-light leading-relaxed">Redefining the physics of ownership. Where geology meets geography.</p>
+          </div>
+          <div>
+            <h4 class="text-gold-500 text-xs font-bold uppercase tracking-widest mb-6">Protocol</h4>
+            <ul class="space-y-4 text-sm text-gray-400">
+              <li><a href="#" class="hover:text-white transition" onclick="App.openDashboard('portal')">The ONCE Service</a></li>
+              <li><a href="#" class="hover:text-white transition" onclick="App.openDashboard('documents')">Verify Certificate</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-gold-500 text-xs font-bold uppercase tracking-widest mb-6">Connect</h4>
+            <div class="flex space-x-6 text-gray-400">
+              <a href="#" class="hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+              <a href="#" class="hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+            </div>
+          </div>
+        </div>
+        <div class="pt-8 text-center md:text-left text-xs text-gray-600 uppercase tracking-widest">
+          <p>&copy; 2026 Amada Realty Ltd.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- =========================================================================
+       LAYER 2: CLIENT DASHBOARD (THE "OS")
+       ========================================================================= -->
+  <div id="dashboard-os" class="fixed inset-0 z-[100] bg-[#eef1f5] transform translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.83,0,0.17,1)] overflow-hidden">
+    <div class="absolute inset-0 bg-white/40 pointer-events-none"></div>
+
+    <div class="dashboard-grid relative z-10">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar-desktop m-4 rounded-[32px] bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl flex flex-col justify-between p-6">
+        <div>
+          <!-- Profile -->
+          <div class="flex items-center gap-4 mb-8 px-2 cursor-pointer" onclick="App.switchTab('profile')">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-gray-800 to-black p-[2px]">
+              <img id="sidebar-avatar" src="https://i.pravatar.cc/150?img=11" class="w-full h-full rounded-full border-2 border-white object-cover" />
+            </div>
+            <div class="min-w-0">
+              <p id="sidebar-name" class="font-display font-bold text-gray-900 truncate">Client</p>
+              <p class="text-xs text-gold-600 font-bold uppercase tracking-wider">Tier: <span id="sidebar-tier">1</span></p>
+            </div>
+          </div>
+
+          <!-- Nav -->
+          <nav class="space-y-2">
+            <button onclick="App.switchTab('overview')" class="nav-item active w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-th-large w-5 text-center"></i> Overview
+            </button>
+            <button onclick="App.switchTab('wallet')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-wallet w-5 text-center"></i> My Assets
+            </button>
+            <button onclick="App.switchTab('marketplace')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50 relative">
+              <i class="fas fa-store w-5 text-center"></i> Marketplace
+              <span class="badge">New</span>
+            </button>
+            <button onclick="App.switchTab('portal')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-shield-halved w-5 text-center"></i> Portal
+            </button>
+            <button onclick="App.switchTab('concierge')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-concierge-bell w-5 text-center"></i> Concierge
+            </button>
+            <button onclick="App.switchTab('documents')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-file-contract w-5 text-center"></i> Documents
+            </button>
+            <button onclick="App.switchTab('profile')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-user w-5 text-center"></i> Profile
+            </button>
+            <button onclick="App.switchTab('settings')" class="nav-item w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm transition-all text-gray-600 hover:bg-white/50">
+              <i class="fas fa-cog w-5 text-center"></i> Settings
+            </button>
+          </nav>
+        </div>
+
+        <div class="space-y-2">
+          <button onclick="App.exportState()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm text-gray-700 hover:bg-white transition-all font-medium">
+            <i class="fas fa-file-export w-5 text-center"></i> Export Demo Data
+          </button>
+          <button onclick="App.resetDemo()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm text-gray-700 hover:bg-white transition-all font-medium">
+            <i class="fas fa-rotate-left w-5 text-center"></i> Reset Demo
+          </button>
+          <button onclick="App.closeDashboard()" class="w-full flex items-center gap-4 px-4 py-3 rounded-2xl text-sm text-red-500 hover:bg-red-50 transition-all font-medium">
+            <i class="fas fa-power-off w-5 text-center"></i> Logout
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="p-4 md:pl-0 h-full overflow-y-auto no-scrollbar relative">
+
+        <!-- DASHBOARD TOP BAR -->
+        <header class="flex justify-between items-center mb-6 px-2 pt-2 sticky top-0 z-40">
+          <div class="flex items-center gap-3">
+            <h2 id="page-title" class="font-display text-2xl font-bold text-gray-900">Portfolio Overview</h2>
+            <span id="auth-pill" class="hidden md:inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-white border border-gray-200 text-gray-600">
+              <i class="fas fa-lock text-gold-600"></i>
+              <span>Secure Session</span>
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <button onclick="App.showToast('Notification', App.randomMarketPulse())" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-gold-600 transition relative" title="Alerts">
+              <i class="far fa-bell"></i>
+              <span id="notif-dot" class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+            </button>
+            <button onclick="App.toggleDarkMode()" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-gray-500 hover:text-black transition" title="Toggle theme">
+              <i class="fas fa-moon"></i>
+            </button>
+            <button onclick="App.closeDashboard()" class="md:hidden bg-gray-900 text-white px-4 py-2 rounded-full text-xs font-bold">Exit</button>
+          </div>
+        </header>
+
+        <!-- TAB: OVERVIEW -->
+        <div id="tab-overview" class="tab-content space-y-6 animate-slide-up">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="mac-window p-6 bg-gradient-to-br from-gray-900 to-black text-white">
+              <div class="flex justify-between items-start mb-8">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-gold-400">
+                  <i class="fas fa-chart-pie"></i>
+                </div>
+                <span id="overview-growth" class="bg-green-500/20 text-green-400 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide">+0.0%</span>
+              </div>
+              <p class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Total Valuation</p>
+              <h3 class="font-display text-3xl" id="overview-total">₦0</h3>
+              <p class="text-xs text-gray-400 mt-3">Updates live when you acquire / sell assets.</p>
+            </div>
+
+            <div class="glass-card p-6">
+              <div class="flex justify-between items-start mb-8">
+                <div class="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center text-gold-600">
+                  <i class="fas fa-gem"></i>
+                </div>
+              </div>
+              <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Rare Earth</p>
+              <h3 class="font-display text-3xl text-gray-900" id="overview-rare">₦0</h3>
+              <p class="text-xs text-gray-400 mt-3">Gem-backed titles and deeded stones.</p>
+            </div>
+
+            <div class="glass-card p-6">
+              <div class="flex justify-between items-start mb-8">
+                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                  <i class="fas fa-building"></i>
+                </div>
+              </div>
+              <p class="text-gray-500 text-xs font-bold uppercase tracking-widest mb-1">Investments</p>
+              <h3 class="font-display text-3xl text-gray-900" id="overview-invest">₦0</h3>
+              <p class="text-xs text-gray-400 mt-3">Equities, bonds, venture allocations.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 mac-window p-6">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display text-lg mb-2">Asset Appreciation</h3>
+                <button onclick="App.simulateMarket()" class="text-xs font-bold uppercase tracking-widest px-3 py-2 rounded-full bg-gray-100 hover:bg-black hover:text-white transition">
+                  Simulate Market Day
+                </button>
+              </div>
+              <p class="text-sm text-gray-500 mb-4">A demo curve derived from your holdings & simulated volatility.</p>
+              <canvas id="mainChart" height="250"></canvas>
+            </div>
+
+            <div class="mac-window p-6">
+              <h3 class="font-display text-lg mb-2">Split</h3>
+              <p class="text-sm text-gray-500 mb-4">Rare Earth vs Investments distribution.</p>
+              <canvas id="pieChart" height="250"></canvas>
+              <div class="mt-4 text-xs text-gray-500">
+                <div class="flex justify-between"><span>Cash Balance</span><span class="font-bold" id="overview-cash">₦0</span></div>
+                <div class="flex justify-between mt-1"><span>Tier</span><span class="font-bold">Level <span id="overview-tier">1</span></span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mac-window p-6">
+            <div class="flex items-center justify-between">
+              <h3 class="font-display text-lg">Activity</h3>
+              <button onclick="App.clearActivity()" class="text-xs font-bold uppercase tracking-widest px-3 py-2 rounded-full bg-gray-100 hover:bg-black hover:text-white transition">
+                Clear
+              </button>
+            </div>
+            <div id="activity-list" class="mt-4 space-y-3"></div>
+          </div>
+        </div>
+
+        <!-- TAB: WALLET (My Assets) -->
+        <div id="tab-wallet" class="tab-content hidden space-y-6 animate-slide-up">
+          <div class="mac-window p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 class="font-display text-xl">My Asset Wallet</h3>
+                <p class="text-sm text-gray-500">Sell assets, view deeds, and generate certificates.</p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="App.generateAllDocs()" class="px-4 py-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                  Generate All Certificates
+                </button>
+                <button onclick="App.switchTab('marketplace')" class="px-4 py-3 rounded-full bg-gray-100 text-gray-900 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition">
+                  Acquire More
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="wallet-grid"></div>
+
+          <div id="wallet-empty" class="hidden mac-window p-10 text-center text-gray-500">
+            <i class="fas fa-wallet text-4xl mb-4 opacity-20"></i>
+            <p class="font-display text-2xl text-gray-900">No assets yet.</p>
+            <p class="mt-2">Open Marketplace and secure your first deeded piece.</p>
+            <button onclick="App.switchTab('marketplace')" class="mt-6 px-6 py-3 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+              Enter Marketplace
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB: MARKETPLACE (Robust Shop) -->
+        <div id="tab-marketplace" class="tab-content hidden space-y-6 animate-slide-up">
+
+          <!-- Controls -->
+          <div class="mac-window p-4 sticky top-0 z-30">
+            <div class="flex flex-col gap-4">
+
+              <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <!-- Search -->
+                <div class="relative w-full md:w-[420px]">
+                  <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                  <input type="text" id="shop-search" placeholder="Find assets, locations, keywords..." class="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold-400 transition" />
+                </div>
+
+                <div class="flex gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
+                  <select id="shop-sort" class="bg-gray-50 border-none rounded-xl text-xs font-bold uppercase px-4 py-3 cursor-pointer outline-none hover:bg-gray-100">
+                    <option value="featured">Sort: Featured</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="title-asc">Title: A → Z</option>
+                    <option value="title-desc">Title: Z → A</option>
+                    <option value="newest">Newest Drops</option>
+                  </select>
+
+                  <select id="shop-filter-type" class="bg-gray-50 border-none rounded-xl text-xs font-bold uppercase px-4 py-3 cursor-pointer outline-none hover:bg-gray-100">
+                    <option value="all">All Types</option>
+                    <option value="Rare Earth">Rare Earth</option>
+                    <option value="Investment">Investment</option>
+                  </select>
+
+                  <select id="shop-filter-location" class="bg-gray-50 border-none rounded-xl text-xs font-bold uppercase px-4 py-3 cursor-pointer outline-none hover:bg-gray-100">
+                    <option value="all">All Locations</option>
+                  </select>
+
+                  <button id="shop-clear" class="bg-black text-white rounded-xl text-xs font-bold uppercase px-4 py-3 hover:bg-gold-600 transition">
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tier + Quick Price + Price Range -->
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Tier selector (click OR drag) -->
+                <div class="glass-card p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Tier Filter</p>
+                    <p class="text-xs text-gray-600">Level <span class="font-bold" id="shop-tier-label">1</span>+</p>
+                  </div>
+
+                  <div class="mt-3 select-none">
+                    <div class="flex justify-between text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+                      <span class="cursor-pointer hover:text-gold-600" onclick="App.setShopTier(1)">₦100k</span>
+                      <span class="cursor-pointer hover:text-gold-600" onclick="App.setShopTier(2)">₦10M</span>
+                      <span class="cursor-pointer hover:text-gold-600" onclick="App.setShopTier(3)">₦50M</span>
+                      <span class="cursor-pointer hover:text-gold-600" onclick="App.setShopTier(4)">₦500M</span>
+                      <span class="cursor-pointer hover:text-gold-600" onclick="App.setShopTier(5)">₦5B+</span>
+                    </div>
+
+                    <input type="range" id="shop-tier-slider" min="1" max="5" step="1" value="1" />
+                    <div class="mt-3 flex gap-2 flex-wrap">
+                      <button class="chip px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition" onclick="App.setShopTier(1)">All</button>
+                      <button class="chip px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition" onclick="App.setShopTier(2)">10M+</button>
+                      <button class="chip px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition" onclick="App.setShopTier(3)">50M+</button>
+                      <button class="chip px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition" onclick="App.setShopTier(4)">500M+</button>
+                      <button class="chip px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-50 transition" onclick="App.setShopTier(5)">5B+</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Price range (double slider) -->
+                <div class="glass-card p-4">
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Price Range</p>
+                    <p class="text-xs text-gray-600"><span class="font-bold" id="price-range-text">₦0 — ₦0</span></p>
+                  </div>
+
+                  <div class="mt-3">
+                    <div class="range-wrap">
+                      <div class="range-track">
+                        <div class="range-fill" id="price-range-fill" style="left: 0%; width: 100%;"></div>
+                      </div>
+                      <input type="range" id="price-min" min="0" max="100" value="0" step="1" />
+                      <input type="range" id="price-max" min="0" max="100" value="100" step="1" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-4">
+                      <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Min</label>
+                        <input id="price-min-input" class="w-full bg-gray-50 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400" />
+                      </div>
+                      <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Max</label>
+                        <input id="price-max-input" class="w-full bg-gray-50 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-gold-400" />
+                      </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-3">Tip: you can type exact numbers or drag the handles.</p>
+                  </div>
+                </div>
+
+                <!-- Availability + Owned toggle -->
+                <div class="glass-card p-4">
+                  <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Visibility</p>
+
+                  <div class="mt-4 space-y-3">
+                    <label class="flex items-center justify-between gap-3 cursor-pointer">
+                      <span class="text-sm text-gray-700">Show Available Only</span>
+                      <input id="shop-available-only" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                    </label>
+                    <label class="flex items-center justify-between gap-3 cursor-pointer">
+                      <span class="text-sm text-gray-700">Hide Owned</span>
+                      <input id="shop-hide-owned" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                    </label>
+                    <label class="flex items-center justify-between gap-3 cursor-pointer">
+                      <span class="text-sm text-gray-700">Show “New Drops” Only</span>
+                      <input id="shop-new-only" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                    </label>
+                  </div>
+
+                  <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-600">
+                    <div class="flex justify-between"><span>Results</span><span class="font-bold" id="shop-results-count">0</span></div>
+                    <div class="flex justify-between mt-1"><span>Page</span><span class="font-bold"><span id="shop-page">1</span>/<span id="shop-pages">1</span></span></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="marketplace-grid"></div>
+
+          <div id="no-results" class="hidden text-center py-12 text-gray-400">
+            <i class="fas fa-search mb-4 text-4xl opacity-20"></i>
+            <p>No assets found matching your criteria.</p>
+            <button onclick="App.clearShopFilters()" class="mt-6 px-6 py-3 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+              Reset Filters
+            </button>
+          </div>
+
+          <!-- Pagination -->
+          <div class="mac-window p-4 flex items-center justify-between" id="shop-pagination">
+            <button id="shop-prev" class="px-4 py-2 rounded-full bg-gray-100 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition">Prev</button>
+            <div class="text-xs text-gray-600">
+              Showing <span class="font-bold" id="shop-showing">0</span> of <span class="font-bold" id="shop-total">0</span>
+            </div>
+            <button id="shop-next" class="px-4 py-2 rounded-full bg-gray-100 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition">Next</button>
+          </div>
+        </div>
+
+        <!-- TAB: PORTAL -->
+        <div id="tab-portal" class="tab-content hidden space-y-6 animate-slide-up">
+          <div class="mac-window p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 class="font-display text-xl">Client Portal</h3>
+                <p class="text-sm text-gray-500">Identity verification, tier upgrade, and secure access flows.</p>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="App.requestTierUpgrade()" class="px-4 py-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                  Request Tier Upgrade
+                </button>
+                <button onclick="App.openDashboard('concierge')" class="px-4 py-3 rounded-full bg-gray-100 text-gray-900 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition">
+                  Talk to Concierge
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="mac-window p-6">
+              <h4 class="font-display text-lg">Verification</h4>
+              <p class="text-sm text-gray-500 mt-1">Complete KYC to unlock high tiers.</p>
+              <div class="mt-4 space-y-3">
+                <div class="p-4 bg-gray-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-bold">Government ID</p>
+                    <p class="text-xs text-gray-500">Passport / NIN / Driver’s License</p>
+                  </div>
+                  <button onclick="App.completeKYC('id')" class="px-3 py-2 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">Upload</button>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-bold">Proof of Address</p>
+                    <p class="text-xs text-gray-500">Utility bill / bank statement</p>
+                  </div>
+                  <button onclick="App.completeKYC('address')" class="px-3 py-2 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">Upload</button>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl flex items-center justify-between">
+                  <div>
+                    <p class="text-sm font-bold">Source of Funds</p>
+                    <p class="text-xs text-gray-500">Declaration + supporting doc</p>
+                  </div>
+                  <button onclick="App.completeKYC('sof')" class="px-3 py-2 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">Submit</button>
+                </div>
+              </div>
+              <div class="mt-5">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Status</p>
+                <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                  <div id="kyc-bar" class="bg-gold-500 h-full" style="width:0%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">KYC progress: <span class="font-bold" id="kyc-progress">0%</span></p>
+              </div>
+            </div>
+
+            <div class="mac-window p-6">
+              <h4 class="font-display text-lg">Deposits</h4>
+              <p class="text-sm text-gray-500 mt-1">Simulated gateway, logged as activity.</p>
+
+              <div class="mt-4 p-4 bg-gray-50 rounded-xl">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Amount (NGN)</label>
+                <input id="deposit-amount" class="w-full bg-white rounded-xl px-3 py-3 text-sm outline-none focus:ring-2 focus:ring-gold-400" placeholder="e.g. 50000000" />
+                <button onclick="App.makeDeposit()" class="mt-3 w-full py-3 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                  Make Deposit
+                </button>
+                <p class="text-xs text-gray-400 mt-3">Deposits increase your “cash balance” and can be used to secure assets.</p>
+              </div>
+
+              <div class="mt-4 text-xs text-gray-600 bg-gray-50 rounded-xl p-4">
+                <div class="flex justify-between"><span>Cash Balance</span><span class="font-bold" id="portal-cash">₦0</span></div>
+                <div class="flex justify-between mt-1"><span>Tier</span><span class="font-bold">Level <span id="portal-tier">1</span></span></div>
+              </div>
+            </div>
+
+            <div class="mac-window p-6">
+              <h4 class="font-display text-lg">Security</h4>
+              <p class="text-sm text-gray-500 mt-1">Session + preferences + recovery flows.</p>
+
+              <div class="mt-4 space-y-3">
+                <div class="p-4 bg-gray-50 rounded-xl">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-bold">2FA</p>
+                      <p class="text-xs text-gray-500">Authenticator / SMS (demo)</p>
+                    </div>
+                    <button onclick="App.toggle2FA()" class="px-3 py-2 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                      Toggle
+                    </button>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-3">Status: <span class="font-bold" id="twofa-status">OFF</span></p>
+                </div>
+
+                <div class="p-4 bg-gray-50 rounded-xl">
+                  <p class="text-sm font-bold">Recovery Keys</p>
+                  <p class="text-xs text-gray-500 mt-1">Generate recovery kit (download text file)</p>
+                  <button onclick="App.downloadRecoveryKit()" class="mt-3 w-full py-3 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                    Generate Kit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CONCIERGE -->
+        <div id="tab-concierge" class="tab-content hidden h-[calc(100vh-140px)] animate-slide-up">
+          <div class="mac-window h-full flex flex-col overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+              <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-full bg-gold-500 text-white flex items-center justify-center"><i class="fas fa-user-tie"></i></div>
+                <div>
+                  <p class="font-bold text-sm">Amada Private Office</p>
+                  <p class="text-xs text-green-600">Online</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="App.quickConcierge('I want to upgrade my tier.')" class="px-3 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition">
+                  Upgrade
+                </button>
+                <button onclick="App.quickConcierge('Show me rare earth deals in Lekki.')" class="px-3 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition">
+                  Deals
+                </button>
+              </div>
+            </div>
+
+            <div class="flex-1 p-6 overflow-y-auto space-y-4 bg-white" id="chat-history"></div>
+
+            <div class="p-4 bg-gray-50 border-t flex gap-2">
+              <input type="text" id="chat-input" placeholder="Type message..." class="flex-1 bg-white border border-gray-300 rounded-full px-4 text-sm focus:outline-none focus:border-gold-500" />
+              <button onclick="App.sendMessage()" class="w-10 h-10 rounded-full bg-gold-500 text-white hover:bg-gold-600"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: DOCUMENTS -->
+        <div id="tab-documents" class="tab-content hidden space-y-6 animate-slide-up">
+          <div class="mac-window p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-display text-xl">Legal Repository</h3>
+                <p class="text-sm text-gray-500">Certificates + deeds generated from your wallet.</p>
+              </div>
+              <button onclick="App.generateAllDocs()" class="px-4 py-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+                Generate Docs
+              </button>
+            </div>
+          </div>
+
+          <div id="documents-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+          <div id="documents-empty" class="hidden mac-window p-10 text-center text-gray-500">
+            <i class="fas fa-file-contract text-4xl mb-4 opacity-20"></i>
+            <p class="font-display text-2xl text-gray-900">No documents yet.</p>
+            <p class="mt-2">Secure an asset to generate its certificate and deed.</p>
+            <button onclick="App.switchTab('marketplace')" class="mt-6 px-6 py-3 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">
+              Go to Marketplace
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB: PROFILE -->
+        <div id="tab-profile" class="tab-content hidden space-y-6 animate-slide-up">
+          <div class="mac-window p-8 max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center gap-6 border-b border-gray-100 pb-8">
+              <div class="w-24 h-24 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onclick="App.randomizeAvatar()">
+                <img id="profile-avatar" src="https://i.pravatar.cc/150?img=11" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs uppercase">Shuffle</div>
+              </div>
+
+              <div class="flex-1">
+                <h3 class="font-display text-2xl font-bold" id="profile-name">Client</h3>
+                <p class="text-gray-500 text-sm" id="profile-email">client@example.com</p>
+                <div class="mt-3 flex gap-2 flex-wrap">
+                  <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-gray-100 text-gray-700">Tier <span id="profile-tier">1</span></span>
+                  <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-gray-100 text-gray-700">2FA <span id="profile-2fa">OFF</span></span>
+                  <span class="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-gray-100 text-gray-700">KYC <span id="profile-kyc">0%</span></span>
+                </div>
+              </div>
+
+              <div class="flex gap-2">
+                <button onclick="App.switchTab('settings')" class="px-4 py-3 rounded-full bg-gray-100 text-gray-900 text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition">Edit</button>
+                <button onclick="App.openDashboard('portal')" class="px-4 py-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">Portal</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+              <div class="glass-card p-6">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Cash Balance</p>
+                <p class="font-display text-3xl mt-2" id="profile-cash">₦0</p>
+                <p class="text-xs text-gray-500 mt-2">Used to secure assets (demo only).</p>
+              </div>
+
+              <div class="glass-card p-6">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Owned Assets</p>
+                <p class="font-display text-3xl mt-2" id="profile-owned">0</p>
+                <p class="text-xs text-gray-500 mt-2">Wallet items currently held.</p>
+              </div>
+
+              <div class="glass-card p-6">
+                <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Client ID</p>
+                <p class="mono text-lg mt-2" id="profile-id">AMADA-XXXXXX</p>
+                <button onclick="App.copyClientId()" class="mt-4 w-full py-3 bg-black text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-600 transition">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: SETTINGS -->
+        <div id="tab-settings" class="tab-content hidden space-y-6 animate-slide-up">
+          <div class="mac-window p-8 max-w-2xl mx-auto">
+            <div class="flex items-center gap-6 mb-8 border-b border-gray-100 pb-8">
+              <div class="w-20 h-20 rounded-full bg-gray-200 overflow-hidden relative group cursor-pointer" onclick="App.randomizeAvatar()">
+                <img id="settings-avatar" src="https://i.pravatar.cc/150?img=11" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white text-xs uppercase">Shuffle</div>
+              </div>
+              <div>
+                <h3 class="font-display text-xl font-bold" id="settings-name-title">Client</h3>
+                <p class="text-gray-500 text-sm" id="settings-email-title">client@example.com</p>
+                <button class="mt-2 text-gold-600 text-xs font-bold uppercase tracking-widest" onclick="App.fakeChangePassword()">Change Password</button>
+              </div>
+            </div>
+
+            <form onsubmit="App.saveSettings(event)">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Full Name</label>
+                  <input id="settings-name" type="text" class="w-full p-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:bg-white focus:border-gold-300 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Email</label>
+                  <input id="settings-email" type="email" class="w-full p-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:bg-white focus:border-gold-300 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Phone</label>
+                  <input id="settings-phone" type="tel" class="w-full p-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:bg-white focus:border-gold-300 outline-none transition" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-gray-400 mb-2">Currency</label>
+                  <select id="settings-currency" class="w-full p-3 bg-gray-50 rounded-xl text-sm border border-transparent focus:bg-white outline-none">
+                    <option value="NGN">NGN (₦)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="GBP">GBP (£)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-8">
+                <h4 class="font-bold mb-4">Notifications</h4>
+                <div class="space-y-3">
+                  <label class="flex items-center justify-between gap-3 cursor-pointer">
+                    <span class="text-sm text-gray-600">Investment Yield Alerts</span>
+                    <input id="notif-yield" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                  </label>
+                  <label class="flex items-center justify-between gap-3 cursor-pointer">
+                    <span class="text-sm text-gray-600">New Asset Drops (Rare Earth)</span>
+                    <input id="notif-drops" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                  </label>
+                  <label class="flex items-center justify-between gap-3 cursor-pointer">
+                    <span class="text-sm text-gray-600">Concierge Messages</span>
+                    <input id="notif-chat" type="checkbox" class="accent-gold-500 w-5 h-5" />
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-gold-600 transition shadow-lg">
+                Save Changes
+              </button>
+            </form>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       LAYER 3: MODALS & OVERLAYS
+       ========================================================================= -->
+
+  <!-- PRODUCT MODAL -->
+  <div id="product-modal" class="fixed inset-0 z-[200] hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="App.closeProductModal()"></div>
+    <div class="absolute inset-y-0 right-0 w-full md:w-[640px] bg-white shadow-2xl transform translate-x-full transition-transform duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] overflow-y-auto" id="product-modal-panel">
+      <button onclick="App.closeProductModal()" class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/50 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="h-[420px] bg-gray-200 relative">
+        <img id="modal-img" src="" class="w-full h-full object-cover" />
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2" id="modal-dots"></div>
+        <div class="absolute top-4 left-4 flex gap-2">
+          <span id="modal-badge-type" class="bg-white/90 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase"></span>
+          <span id="modal-badge-tier" class="bg-black/80 text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase"></span>
+        </div>
+      </div>
+
+      <div class="p-8">
+        <div class="flex justify-between items-start mb-2 gap-4">
+          <h2 id="modal-title" class="font-display text-3xl font-bold"></h2>
+          <span id="modal-price" class="font-sans font-bold text-xl text-gold-600 whitespace-nowrap"></span>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <p id="modal-type" class="text-xs font-bold uppercase tracking-widest text-gray-400"></p>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400">Location: <span id="modal-location" class="text-gray-700"></span></p>
+        </div>
+
+        <p id="modal-desc" class="text-gray-600 leading-relaxed mt-6 mb-8"></p>
+
+        <div class="grid grid-cols-2 gap-4 mb-8 p-4 bg-gray-50 rounded-xl">
+          <div>
+            <p class="text-xs text-gray-400 uppercase">Status</p>
+            <p class="font-medium" id="modal-status"></p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 uppercase">Ownership</p>
+            <p class="font-medium" id="modal-owned"></p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 uppercase">Asset Class</p>
+            <p class="font-medium" id="modal-class"></p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-400 uppercase">Certificate</p>
+            <p class="font-medium" id="modal-cert"></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <button id="modal-primary" onclick="App.secureOrOwned()" class="w-full py-4 bg-black text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-gold-500 transition shadow-lg">
+            Secure Asset
+          </button>
+          <button onclick="App.previewCertificate()" class="w-full py-4 bg-gray-100 text-gray-900 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition">
+            Preview Certificate
+          </button>
+        </div>
+
+        <div class="mt-6 text-xs text-gray-400">
+          This is a working demo: acquiring updates wallet + docs + charts + activity, and persists in localStorage.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed top-6 right-6 z-[300] bg-white/90 backdrop-blur border border-gray-200 shadow-2xl rounded-2xl p-4 flex items-center gap-4 transform translate-x-[200%] transition-transform duration-500">
+    <div id="toast-icon" class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-check"></i></div>
+    <div>
+      <h4 class="font-bold text-sm">Success</h4>
+      <p class="text-xs text-gray-500">Operation completed.</p>
+    </div>
+  </div>
+
+  <script>
+    const App = {
+      // ---------------------------
+      // DATA + STATE (persisted)
+      // ---------------------------
+      data: {
+        tierContent: {
+          1: { title: "Digital Direct", desc: "Seamless online checkout. Instant digital deed transfer.", icon: "fa-wifi", benefits: ["Instant deed preview", "One-click securing", "Wallet auto-updates"] },
+          2: { title: "Private Consult", desc: "Requires 20% Deposit. Dedicated Relationship Manager.", icon: "fa-user-clock", benefits: ["Priority concierge", "Deposit simulation", "Tier-filtered drops"] },
+          3: { title: "Priority Access", desc: "Requires 5% Deposit. Early access to unlisted assets.", icon: "fa-star", benefits: ["Pre-market offers", "Fast verification", "Early drops"] },
+          4: { title: "Mobile Estate", desc: "We come to you. Luxury Van with MAP TV dispatch.", icon: "fa-shuttle-van", benefits: ["On-site viewing", "Mobile signing", "High-tier inventory"] },
+          5: { title: "Protocol ONCE", desc: "Own Nothing. Control Everything. The Private Chamber.", icon: "fa-fingerprint", benefits: ["Private chamber", "Sovereign inventory", "Zero-public listings"] }
+        },
+        products: [
+          {
+            id: 1,
+            title: "The Azure Coast Estate",
+            price: 120000000,
+            type: "Rare Earth",
+            location: "Lekki",
+            status: "Available",
+            isNew: true,
+            imgs: [
+              "https://images.unsplash.com/photo-1599643478518-17488fbbcd75?q=80&w=1200",
+              "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200"
+            ],
+            desc: "A rare combination of a 5ct Sapphire necklace and a prime waterfront plot."
+          },
+          {
+            id: 2,
+            title: "Amada Tech Hub Series A",
+            price: 50000000,
+            type: "Investment",
+            location: "Eko Atlantic",
+            status: "Available",
+            isNew: false,
+            imgs: [
+              "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200",
+              "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200"
+            ],
+            desc: "Investment tier asset. Platinum band granting Series A equity allocation."
+          },
+          {
+            id: 3,
+            title: "Sovereign Ruby 9ct",
+            price: 850000000,
+            type: "Rare Earth",
+            location: "Banana Island",
+            status: "Available",
+            isNew: true,
+            imgs: [
+              "https://images.unsplash.com/photo-1615655406736-b37c4fabf923?q=80&w=1200",
+              "https://images.unsplash.com/photo-1600566753151-384129cf4e3d?q=80&w=1200"
+            ],
+            desc: "Pigeon Blood Ruby paired with a title deed for a 4-bedroom terrace."
+          },
+          {
+            id: 4,
+            title: "Gold Coast Bond",
+            price: 15000000,
+            type: "Investment",
+            location: "Victoria Island",
+            status: "Available",
+            isNew: false,
+            imgs: [
+              "https://images.unsplash.com/photo-1610375461246-83df859d849d?q=80&w=1200",
+              "https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=1200"
+            ],
+            desc: "Entry level investment bond backed by gold bullion."
+          },
+          {
+            id: 5,
+            title: "Onyx Tower Penthouse",
+            price: 2500000000,
+            type: "Rare Earth",
+            location: "Ikoyi",
+            status: "Available",
+            isNew: true,
+            imgs: [
+              "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1200",
+              "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200"
+            ],
+            desc: "Ultra-luxury penthouse ownership represented by Black Onyx."
+          },
+          {
+            id: 6,
+            title: "Emerald Valley Land",
+            price: 75000000,
+            type: "Rare Earth",
+            location: "Ajah",
+            status: "Available",
+            isNew: false,
+            imgs: [
+              "https://images.unsplash.com/photo-1598560917505-59c367dfd28b?q=80&w=1200",
+              "https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200"
+            ],
+            desc: "3 hectares in the Green Zone, paired with Emerald cufflinks."
+          },
+          {
+            id: 7,
+            title: "Agri-Tech Venture Yield",
+            price: 30000000,
+            type: "Investment",
+            location: "Abuja",
+            status: "Available",
+            isNew: true,
+            imgs: [
+              "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=1200",
+              "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200"
+            ],
+            desc: "High yield agricultural investment portfolio."
+          },
+          {
+            id: 8,
+            title: "The Royal Diamond",
+            price: 5000000000,
+            type: "Rare Earth",
+            location: "Private Island",
+            status: "Available",
+            isNew: true,
+            imgs: [
+              "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200",
+              "https://images.unsplash.com/photo-1505693314120-0d443867891c?q=80&w=1200"
+            ],
+            desc: "The pinnacle. 20ct Diamond and a private island deed."
+          }
+        ]
+      },
+
+      state: {
+        // user + settings
+        user: {
+          name: "Aliko D.",
+          email: "aliko.d@example.com",
+          phone: "+234 800 000 0000",
+          currency: "NGN",
+          avatar: "https://i.pravatar.cc/150?img=11",
+          clientId: "AMADA-" + Math.random().toString(36).slice(2, 8).toUpperCase(),
+        },
+        tier: 1,
+        twoFA: false,
+
+        // KYC
+        kyc: { id: false, address: false, sof: false },
+
+        // financial
+        cash: 0,
+        wallet: [3], // product IDs owned
+
+        // activity + chat
+        activity: [],
+        chat: [],
+
+        // shop filters
+        shop: {
+          q: "",
+          type: "all",
+          location: "all",
+          sort: "featured",
+          tierMin: 1,
+          priceMin: null,
+          priceMax: null,
+          availableOnly: true,
+          hideOwned: false,
+          newOnly: false,
+          page: 1,
+          perPage: 6
+        },
+
+        // UI
+        darkMode: false,
+        chartsInitialized: false,
+        marketSeries: [1200, 1250, 1240, 1300, 1380, 1450] // base
+      },
+
+      // ---------------------------
+      // INIT + PERSIST
+      // ---------------------------
+      init() {
+        this.loadState();
+        this.bootLoader();
+        this.hydrateDerivedData();
+        this.bindMarketplaceUI();
+        this.updateTier(this.state.tier);
+        this.renderPublicShop();
+        this.renderMarketplace();
+        this.renderWallet();
+        this.renderDocuments();
+        this.renderChat();
+        this.renderOverview();
+        this.renderProfile();
+        this.renderSettings();
+        this.renderPortal();
+
+        // keyboard: Esc closes modal
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            this.closeProductModal();
+          }
+        });
+
+        // enter key in chat
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') this.sendMessage();
+        });
+      },
+
+      bootLoader() {
+        window.addEventListener('load', () => {
+          setTimeout(() => {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 1000);
+          }, 800);
+        });
+      },
+
+      saveState() {
+        try {
+          localStorage.setItem("amada_demo_state_v2", JSON.stringify(this.state));
+        } catch (e) {
+          // ignore
+        }
+      },
+
+      loadState() {
+        try {
+          const raw = localStorage.getItem("amada_demo_state_v2");
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          // shallow merge to avoid missing new fields
+          this.state = this.deepMerge(this.state, parsed);
+        } catch (e) {
+          // ignore
+        }
+      },
+
+      deepMerge(target, source) {
+        if (typeof source !== 'object' || source === null) return target;
+        const out = Array.isArray(target) ? [...target] : { ...target };
+        for (const k of Object.keys(source)) {
+          if (source[k] && typeof source[k] === 'object' && !Array.isArray(source[k])) {
+            out[k] = this.deepMerge(target[k] || {}, source[k]);
+          } else {
+            out[k] = source[k];
+          }
+        }
+        return out;
+      },
+
+      resetDemo() {
+        localStorage.removeItem("amada_demo_state_v2");
+        location.reload();
+      },
+
+      exportState() {
+        const payload = JSON.stringify(this.state, null, 2);
+        this.downloadTextFile(`amada-demo-export-${Date.now()}.json`, payload);
+        this.showToast("Exported", "Demo state downloaded.");
+      },
+
+      // ---------------------------
+      // HELPERS
+      // ---------------------------
+      formatMoney(amount) {
+        const cur = this.state.user.currency || "NGN";
+        const symbol = cur === "NGN" ? "₦" : cur === "USD" ? "$" : "£";
+        return symbol + (amount || 0).toLocaleString();
+      },
+
+      clamp(n, min, max) { return Math.max(min, Math.min(max, n)); },
+
+      tierFromPrice(price) {
+        // tier thresholds aligned with your labels
+        if (price >= 5000000000) return 5;
+        if (price >= 500000000) return 4;
+        if (price >= 50000000) return 3;
+        if (price >= 10000000) return 2;
+        return 1;
+      },
+
+      hydrateDerivedData() {
+        // attach tier to each product
+        this.data.products = this.data.products.map(p => ({ ...p, tier: this.tierFromPrice(p.price) }));
+
+        // locations dropdown
+        const locations = Array.from(new Set(this.data.products.map(p => p.location))).sort();
+        const sel = document.getElementById('shop-filter-location');
+        sel.innerHTML = `<option value="all">All Locations</option>` + locations.map(l => `<option value="${this.escapeHtml(l)}">${this.escapeHtml(l)}</option>`).join("");
+
+        // default price min/max based on dataset
+        const prices = this.data.products.map(p => p.price);
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+        if (this.state.shop.priceMin === null) this.state.shop.priceMin = minP;
+        if (this.state.shop.priceMax === null) this.state.shop.priceMax = maxP;
+
+        // make sure owned items marked unavailable if you want (optional)
+        // demo keeps "Available", but you can flip to "Secured" on purchase if you want
+      },
+
+      escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, (m) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+      },
+
+      scrollToTop(e) {
+        if (e) e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+
+      // ---------------------------
+      // TIER (PUBLIC) — click or drag
+      // ---------------------------
+      setTier(val) {
+        val = Number(val);
+        document.getElementById('tier-slider').value = val;
+        this.state.tier = val;
+        this.updateTier(val);
+        this.logActivity("Tier Updated", `Set access tier to Level ${val}.`);
+        this.saveState();
+      },
+
+      updateTier(val) {
+        val = Number(val);
+        this.state.tier = val;
+
+        const data = this.data.tierContent[val];
+        const display = document.getElementById('tier-display');
+        display.innerHTML = `
+          <div class="text-center md:text-left animate-fade-in">
+            <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-6 text-2xl mx-auto md:mx-0 ${val == 5 ? 'bg-black text-white' : 'text-gold-600'}">
+              <i class="fas ${data.icon}"></i>
+            </div>
+            <h3 class="font-display text-4xl mb-4 text-gray-900">${data.title}</h3>
+            <p class="text-gray-500 text-lg mb-8 leading-relaxed">${data.desc}</p>
+            ${val > 1 ? `<div class="inline-block px-4 py-2 border border-red-200 bg-red-50 text-red-500 text-xs font-bold uppercase tracking-widest rounded mb-6">Deposit Required (Demo)</div><br>` : ''}
+            <button onclick="App.handleTierAction(${val})" class="px-8 py-4 bg-black text-white rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gold-500 transition shadow-lg transform hover:scale-105">
+              ${val === 5 ? 'Initiate Protocol' : 'Select Tier'}
+            </button>
+          </div>
+          <div class="hidden md:block h-[300px] bg-gray-100 rounded-3xl relative overflow-hidden animate-fade-in shadow-inner">
+            <div class="absolute inset-0 flex items-center justify-center text-gray-300"><i class="fas fa-layer-group text-9xl opacity-20"></i></div>
+            <div class="absolute bottom-6 left-6 right-6 bg-white/80 backdrop-blur p-4 rounded-xl">
+              <div class="flex justify-between items-center">
+                <span class="text-xs font-bold uppercase text-gray-500">Service Level</span>
+                <span class="text-gold-600 font-display font-bold text-xl">${val}/5</span>
+              </div>
+              <div class="w-full bg-gray-200 h-1 mt-2 rounded-full overflow-hidden">
+                <div class="bg-gold-500 h-full transition-all duration-500" style="width:${val * 20}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        // mini cards
+        document.getElementById("tier-mini-title").innerText = ["Entry", "Consult", "Priority", "Mobile", "ONCE"][val - 1];
+        document.getElementById("tier-mini-desc").innerText = data.desc;
+        document.getElementById("tier-mini-benefits").innerHTML = data.benefits.map(b => `<li class="flex items-center gap-2"><i class="fas fa-check text-gold-600"></i><span>${this.escapeHtml(b)}</span></li>`).join("");
+
+        // sidebar tier
+        document.getElementById("sidebar-tier").innerText = val;
+        document.getElementById("overview-tier").innerText = val;
+        document.getElementById("portal-tier").innerText = val;
+        document.getElementById("profile-tier").innerText = val;
+
+        // keep slider synced
+        document.getElementById('tier-slider').value = val;
+
+        this.saveState();
+      },
+
+      handleTierAction(tier) {
+        tier = Number(tier);
+        if (tier === 1) this.openDashboard('marketplace');
+        else {
+          this.showToast('Authentication', 'Redirecting to secure deposit gateway...');
+          setTimeout(() => this.openDashboard('portal'), 800);
+        }
+      },
+
+      // ---------------------------
+      // DASHBOARD CORE
+      // ---------------------------
+      openDashboard(tab = 'overview') {
+        const dashboard = document.getElementById('dashboard-os');
+        dashboard.classList.remove('translate-y-full');
+        document.body.style.overflow = 'hidden';
+
+        document.getElementById("auth-pill").classList.remove("hidden");
+
+        if (!this.state.chartsInitialized) {
+          this.initCharts();
+          this.state.chartsInitialized = true;
+        } else {
+          this.refreshCharts();
+        }
+
+        this.switchTab(tab);
+        this.saveState();
+      },
+
+      closeDashboard() {
+        document.getElementById('dashboard-os').classList.add('translate-y-full');
+        document.body.style.overflow = '';
+        this.saveState();
+      },
+
+      switchTab(tab) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        const btn = document.querySelector(`button[onclick="App.switchTab('${tab}')"]`);
+        if (btn) btn.classList.add('active');
+
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        const content = document.getElementById(`tab-${tab}`);
+        if (content) {
+          content.classList.remove('hidden');
+          content.classList.remove('animate-slide-up');
+          void content.offsetWidth;
+          content.classList.add('animate-slide-up');
+        }
+
+        const titles = {
+          overview: 'Portfolio Overview',
+          wallet: 'My Asset Wallet',
+          marketplace: 'Asset Marketplace',
+          concierge: 'Private Concierge',
+          documents: 'Legal Repository',
+          settings: 'Account Settings',
+          profile: 'Client Profile',
+          portal: 'Client Portal'
+        };
+        document.getElementById('page-title').innerText = titles[tab] || 'Dashboard';
+
+        // per-tab refresh
+        if (tab === "marketplace") this.renderMarketplace();
+        if (tab === "wallet") this.renderWallet();
+        if (tab === "documents") this.renderDocuments();
+        if (tab === "overview") this.renderOverview();
+        if (tab === "profile") this.renderProfile();
+        if (tab === "settings") this.renderSettings();
+        if (tab === "portal") this.renderPortal();
+      },
+
+      toggleDarkMode() {
+        this.state.darkMode = !this.state.darkMode;
+        document.documentElement.classList.toggle("dark", this.state.darkMode);
+        this.showToast("Theme", this.state.darkMode ? "Dark mode enabled." : "Light mode enabled.");
+        this.saveState();
+      },
+
+      // ---------------------------
+      // MARKETPLACE — robust filters
+      // ---------------------------
+      bindMarketplaceUI() {
+        const q = document.getElementById("shop-search");
+        const type = document.getElementById("shop-filter-type");
+        const loc = document.getElementById("shop-filter-location");
+        const sort = document.getElementById("shop-sort");
+        const clear = document.getElementById("shop-clear");
+
+        const avail = document.getElementById("shop-available-only");
+        const hideOwned = document.getElementById("shop-hide-owned");
+        const newOnly = document.getElementById("shop-new-only");
+
+        const tierSlider = document.getElementById("shop-tier-slider");
+
+        // price range
+        const minRange = document.getElementById("price-min");
+        const maxRange = document.getElementById("price-max");
+        const minInput = document.getElementById("price-min-input");
+        const maxInput = document.getElementById("price-max-input");
+
+        // init from state
+        q.value = this.state.shop.q;
+        type.value = this.state.shop.type;
+        loc.value = this.state.shop.location;
+        sort.value = this.state.shop.sort;
+        avail.checked = !!this.state.shop.availableOnly;
+        hideOwned.checked = !!this.state.shop.hideOwned;
+        newOnly.checked = !!this.state.shop.newOnly;
+
+        tierSlider.value = this.state.shop.tierMin;
+        document.getElementById("shop-tier-label").innerText = this.state.shop.tierMin;
+
+        // price slider normalized 0-100
+        const prices = this.data.products.map(p => p.price);
+        const pMin = Math.min(...prices);
+        const pMax = Math.max(...prices);
+        const toPct = (v) => ((v - pMin) / (pMax - pMin)) * 100;
+        const fromPct = (pct) => pMin + ((pMax - pMin) * (pct / 100));
+
+        // set UI from state
+        minRange.value = this.clamp(Math.round(toPct(this.state.shop.priceMin)), 0, 100);
+        maxRange.value = this.clamp(Math.round(toPct(this.state.shop.priceMax)), 0, 100);
+
+        minInput.value = String(this.state.shop.priceMin);
+        maxInput.value = String(this.state.shop.priceMax);
+
+        const updateFill = () => {
+          const a = Number(minRange.value);
+          const b = Number(maxRange.value);
+          const lo = Math.min(a, b);
+          const hi = Math.max(a, b);
+          const fill = document.getElementById("price-range-fill");
+          fill.style.left = lo + "%";
+          fill.style.width = (hi - lo) + "%";
+
+          const realMin = Math.round(fromPct(lo));
+          const realMax = Math.round(fromPct(hi));
+
+          this.state.shop.priceMin = Math.min(realMin, realMax);
+          this.state.shop.priceMax = Math.max(realMin, realMax);
+
+          minInput.value = String(this.state.shop.priceMin);
+          maxInput.value = String(this.state.shop.priceMax);
+          document.getElementById("price-range-text").innerText = `${this.formatMoney(this.state.shop.priceMin)} — ${this.formatMoney(this.state.shop.priceMax)}`;
+        };
+
+        updateFill();
+
+        // Debounced search
+        let t;
+        q.addEventListener("input", () => {
+          clearTimeout(t);
+          t = setTimeout(() => {
+            this.state.shop.q = q.value.trim();
+            this.state.shop.page = 1;
+            this.renderMarketplace();
+            this.saveState();
+          }, 180);
+        });
+
+        [type, loc, sort].forEach(el => el.addEventListener("change", () => {
+          this.state.shop.type = type.value;
+          this.state.shop.location = loc.value;
+          this.state.shop.sort = sort.value;
+          this.state.shop.page = 1;
+          this.renderMarketplace();
+          this.saveState();
+        }));
+
+        [avail, hideOwned, newOnly].forEach(el => el.addEventListener("change", () => {
+          this.state.shop.availableOnly = avail.checked;
+          this.state.shop.hideOwned = hideOwned.checked;
+          this.state.shop.newOnly = newOnly.checked;
+          this.state.shop.page = 1;
+          this.renderMarketplace();
+          this.saveState();
+        }));
+
+        tierSlider.addEventListener("input", () => {
+          this.setShopTier(Number(tierSlider.value));
+        });
+
+        // price: range inputs
+        minRange.addEventListener("input", () => {
+          // keep thumbs from crossing too aggressively; allow overlap but interpret min/max safely
+          updateFill();
+          this.state.shop.page = 1;
+          this.renderMarketplace();
+          this.saveState();
+        });
+        maxRange.addEventListener("input", () => {
+          updateFill();
+          this.state.shop.page = 1;
+          this.renderMarketplace();
+          this.saveState();
+        });
+
+        // price: typed inputs
+        const onTypedPrice = () => {
+          const vMin = Number(minInput.value.replace(/[^\d]/g, "")) || 0;
+          const vMax = Number(maxInput.value.replace(/[^\d]/g, "")) || 0;
+          const realMin = this.clamp(vMin, pMin, pMax);
+          const realMax = this.clamp(vMax, pMin, pMax);
+
+          this.state.shop.priceMin = Math.min(realMin, realMax);
+          this.state.shop.priceMax = Math.max(realMin, realMax);
+
+          minRange.value = this.clamp(Math.round(toPct(this.state.shop.priceMin)), 0, 100);
+          maxRange.value = this.clamp(Math.round(toPct(this.state.shop.priceMax)), 0, 100);
+          updateFill();
+
+          this.state.shop.page = 1;
+          this.renderMarketplace();
+          this.saveState();
+        };
+
+        minInput.addEventListener("change", onTypedPrice);
+        maxInput.addEventListener("change", onTypedPrice);
+
+        clear.addEventListener("click", () => this.clearShopFilters());
+
+        // pagination
+        document.getElementById("shop-prev").addEventListener("click", () => {
+          this.state.shop.page = Math.max(1, this.state.shop.page - 1);
+          this.renderMarketplace();
+          this.saveState();
+        });
+        document.getElementById("shop-next").addEventListener("click", () => {
+          this.state.shop.page = this.state.shop.page + 1;
+          this.renderMarketplace();
+          this.saveState();
+        });
+      },
+
+      clearShopFilters() {
+        const prices = this.data.products.map(p => p.price);
+        const minP = Math.min(...prices);
+        const maxP = Math.max(...prices);
+
+        this.state.shop = {
+          q: "",
+          type: "all",
+          location: "all",
+          sort: "featured",
+          tierMin: 1,
+          priceMin: minP,
+          priceMax: maxP,
+          availableOnly: true,
+          hideOwned: false,
+          newOnly: false,
+          page: 1,
+          perPage: 6
+        };
+
+        // rebind + rerender
+        this.bindMarketplaceUI();
+        this.renderMarketplace();
+        this.showToast("Reset", "Shop filters cleared.");
+        this.saveState();
+      },
+
+      setShopTier(val) {
+        val = Number(val);
+        this.state.shop.tierMin = val;
+        document.getElementById("shop-tier-slider").value = val;
+        document.getElementById("shop-tier-label").innerText = val;
+        this.state.shop.page = 1;
+        this.renderMarketplace();
+        this.saveState();
+      },
+
+      getFilteredProducts() {
+        const s = this.state.shop;
+        const q = (s.q || "").toLowerCase();
+
+        let items = this.data.products.filter(p => {
+          const matchesQ =
+            !q ||
+            p.title.toLowerCase().includes(q) ||
+            p.desc.toLowerCase().includes(q) ||
+            p.location.toLowerCase().includes(q);
+
+          const matchesType = s.type === "all" || p.type === s.type;
+          const matchesLoc = s.location === "all" || p.location === s.location;
+
+          const matchesTier = p.tier >= s.tierMin;
+
+          const matchesPrice = p.price >= s.priceMin && p.price <= s.priceMax;
+
+          const matchesAvail = !s.availableOnly || p.status === "Available";
+
+          const isOwned = this.state.wallet.includes(p.id);
+          const matchesOwned = !s.hideOwned || !isOwned;
+
+          const matchesNew = !s.newOnly || !!p.isNew;
+
+          return matchesQ && matchesType && matchesLoc && matchesTier && matchesPrice && matchesAvail && matchesOwned && matchesNew;
+        });
+
+        // sorting
+        switch (s.sort) {
+          case "price-asc":
+            items.sort((a, b) => a.price - b.price);
+            break;
+          case "price-desc":
+            items.sort((a, b) => b.price - a.price);
+            break;
+          case "title-asc":
+            items.sort((a, b) => a.title.localeCompare(b.title));
+            break;
+          case "title-desc":
+            items.sort((a, b) => b.title.localeCompare(a.title));
+            break;
+          case "newest":
+            items.sort((a, b) => (b.isNew === true) - (a.isNew === true));
+            break;
+          case "featured":
+          default:
+            // featured: new first, then higher tier, then price
+            items.sort((a, b) => (b.isNew === true) - (a.isNew === true) || (b.tier - a.tier) || (b.price - a.price));
+            break;
+        }
+
+        return items;
+      },
+
+      renderMarketplace() {
+        const grid = document.getElementById('marketplace-grid');
+        const noResults = document.getElementById('no-results');
+
+        const items = this.getFilteredProducts();
+        const total = items.length;
+
+        // pagination
+        const page = this.state.shop.page;
+        const perPage = this.state.shop.perPage;
+        const pages = Math.max(1, Math.ceil(total / perPage));
+        const safePage = this.clamp(page, 1, pages);
+        this.state.shop.page = safePage;
+
+        const start = (safePage - 1) * perPage;
+        const slice = items.slice(start, start + perPage);
+
+        document.getElementById("shop-results-count").innerText = total;
+        document.getElementById("shop-page").innerText = safePage;
+        document.getElementById("shop-pages").innerText = pages;
+        document.getElementById("shop-showing").innerText = slice.length;
+        document.getElementById("shop-total").innerText = total;
+
+        document.getElementById("shop-prev").disabled = safePage <= 1;
+        document.getElementById("shop-next").disabled = safePage >= pages;
+        document.getElementById("shop-prev").classList.toggle("opacity-50", safePage <= 1);
+        document.getElementById("shop-next").classList.toggle("opacity-50", safePage >= pages);
+
+        if (total === 0) {
+          grid.innerHTML = '';
+          noResults.classList.remove('hidden');
+          return;
+        }
+
+        noResults.classList.add('hidden');
+        grid.innerHTML = slice.map(p => this.createProductCard(p)).join('');
+      },
+
+      renderPublicShop() {
+        const grid = document.getElementById('public-products-grid');
+        const featured = [...this.data.products].sort((a, b) => (b.isNew === true) - (a.isNew === true) || (b.tier - a.tier)).slice(0, 3);
+        grid.innerHTML = featured.map(p => this.createProductCard(p, true)).join('');
+      },
+
+      createProductCard(p, compact = false) {
+        const owned = this.state.wallet.includes(p.id);
+        const badge = owned ? `<div class="absolute top-2 left-2 bg-black/80 text-white px-2 py-1 rounded text-[10px] font-bold uppercase">Owned</div>` : "";
+        const newBadge = p.isNew ? `<div class="absolute bottom-2 left-2 bg-white/90 px-2 py-1 rounded text-[10px] font-bold uppercase">New Drop</div>` : "";
+
+        return `
+          <div class="glass-card p-4 hover:shadow-xl transition duration-300 group cursor-pointer bg-white h-full flex flex-col" onclick="App.showProductModal(${p.id})">
+            <div class="h-48 rounded-xl overflow-hidden mb-4 relative flex-shrink-0">
+              <img src="${p.imgs?.[0] || p.img}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+              <div class="absolute top-2 right-2 bg-white/90 px-2 py-1 rounded text-[10px] font-bold uppercase">${this.escapeHtml(p.type)}</div>
+              ${badge}
+              ${newBadge}
+              <div class="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-[10px] font-bold uppercase">Tier ${p.tier}</div>
+            </div>
+            <div class="flex-1 flex flex-col">
+              <h4 class="font-display font-bold text-lg mb-1 leading-tight">${this.escapeHtml(p.title)}</h4>
+              <p class="text-xs text-gray-500 mb-2">${this.escapeHtml(p.location)} • <span class="${p.status === 'Available' ? 'text-green-600' : 'text-gray-500'} font-bold">${this.escapeHtml(p.status)}</span></p>
+              <p class="text-xs text-gray-500 mb-3 ${compact ? 'line-clamp-2' : 'line-clamp-3'}">${this.escapeHtml(p.desc)}</p>
+              <div class="mt-auto flex justify-between items-center pt-2 border-t border-gray-100">
+                <span class="text-gold-600 font-bold text-sm">${this.formatMoney(p.price)}</span>
+                <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-black hover:text-white transition">
+                  <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      // ---------------------------
+      // PRODUCT MODAL + ACQUIRE
+      // ---------------------------
+      showProductModal(id) {
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+        this.currentProductId = id;
+
+        const owned = this.state.wallet.includes(id);
+
+        document.getElementById('modal-title').innerText = p.title;
+        document.getElementById('modal-price').innerText = this.formatMoney(p.price);
+        document.getElementById('modal-type').innerText = p.type;
+        document.getElementById('modal-desc').innerText = p.desc;
+        document.getElementById('modal-location').innerText = p.location;
+
+        document.getElementById('modal-status').innerText = p.status;
+        document.getElementById('modal-status').className = `font-medium ${p.status === 'Available' ? 'text-green-600' : 'text-gray-600'}`;
+
+        document.getElementById('modal-owned').innerText = owned ? "Already in Wallet" : "Not owned";
+        document.getElementById('modal-class').innerText = p.type === "Rare Earth" ? "Gem-backed deed" : "Investment allocation";
+        document.getElementById('modal-cert').innerText = owned ? "Ready" : "Generated on purchase";
+
+        document.getElementById("modal-badge-type").innerText = p.type;
+        document.getElementById("modal-badge-tier").innerText = "Tier " + p.tier;
+
+        const primary = document.getElementById("modal-primary");
+        primary.innerText = owned ? "Owned" : "Secure Asset";
+        primary.classList.toggle("opacity-60", owned);
+
+        // image carousel (simple)
+        const img = document.getElementById('modal-img');
+        const dots = document.getElementById('modal-dots');
+        const imgs = (p.imgs && p.imgs.length ? p.imgs : [p.img]).filter(Boolean);
+
+        let idx = 0;
+        img.src = imgs[idx];
+        dots.innerHTML = imgs.map((_, i) => `<button onclick="App.modalSetImg(${id},${i})" class="w-2 h-2 rounded-full ${i === 0 ? 'bg-white' : 'bg-white/50'}"></button>`).join("");
+
+        this.modalImgs = imgs;
+        this.modalImgIndex = 0;
+
+        const modal = document.getElementById('product-modal');
+        const panel = document.getElementById('product-modal-panel');
+        modal.classList.remove('hidden');
+        setTimeout(() => panel.classList.remove('translate-x-full'), 10);
+      },
+
+      modalSetImg(productId, index) {
+        const p = this.data.products.find(x => x.id === productId);
+        if (!p) return;
+        const imgs = (p.imgs && p.imgs.length ? p.imgs : [p.img]).filter(Boolean);
+        index = this.clamp(index, 0, imgs.length - 1);
+        this.modalImgs = imgs;
+        this.modalImgIndex = index;
+
+        document.getElementById("modal-img").src = imgs[index];
+        const dots = document.getElementById("modal-dots");
+        dots.innerHTML = imgs.map((_, i) => `<button onclick="App.modalSetImg(${productId},${i})" class="w-2 h-2 rounded-full ${i === index ? 'bg-white' : 'bg-white/50'}"></button>`).join("");
+      },
+
+      closeProductModal() {
+        const modal = document.getElementById('product-modal');
+        const panel = document.getElementById('product-modal-panel');
+        if (modal.classList.contains("hidden")) return;
+        panel.classList.add('translate-x-full');
+        setTimeout(() => modal.classList.add('hidden'), 250);
+      },
+
+      secureOrOwned() {
+        const id = this.currentProductId;
+        if (!id) return;
+        if (this.state.wallet.includes(id)) {
+          this.showToast("Owned", "This asset is already in your wallet.");
+          return;
+        }
+        this.addToWallet(id);
+      },
+
+      addToWallet(id) {
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+
+        // optional “cash balance” check
+        if (this.state.cash > 0 && this.state.cash < p.price * 0.05 && this.state.tier > 1) {
+          this.showToast("Deposit Needed", "Insufficient cash balance for high-tier securing (demo).");
+          return;
+        }
+
+        this.showToast('Processing', 'Securing asset on-chain...');
+        setTimeout(() => {
+          this.state.wallet.push(id);
+
+          // simulate a small “cash use” if user has cash
+          if (this.state.cash > 0) {
+            const use = Math.min(this.state.cash, Math.round(p.price * 0.02));
+            this.state.cash -= use;
+          }
+
+          this.logActivity("Asset Secured", `${p.title} • ${this.formatMoney(p.price)} • ${p.location}`);
+          this.renderWallet();
+          this.renderDocuments();
+          this.renderOverview();
+          this.refreshCharts();
+          this.closeProductModal();
+
+          this.showToast('Success', 'Asset acquired successfully.');
+          this.switchTab('wallet');
+
+          // notif dot
+          document.getElementById("notif-dot").classList.remove("hidden");
+          this.saveState();
+        }, 900);
+      },
+
+      // Sell asset (demo)
+      sellAsset(id) {
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+        const owned = this.state.wallet.includes(id);
+        if (!owned) return;
+
+        this.showToast("Selling", "Executing exit order...");
+        setTimeout(() => {
+          this.state.wallet = this.state.wallet.filter(x => x !== id);
+          // credit cash (demo)
+          const credit = Math.round(p.price * 0.95);
+          this.state.cash += credit;
+
+          this.logActivity("Asset Sold", `${p.title} • Credited ${this.formatMoney(credit)}`);
+          this.renderWallet();
+          this.renderDocuments();
+          this.renderOverview();
+          this.refreshCharts();
+          this.showToast("Sold", "Asset sold and cash credited.");
+          this.saveState();
+        }, 700);
+      },
+
+      previewCertificate() {
+        const id = this.currentProductId;
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+
+        const text = this.buildCertificateText(p, this.state.wallet.includes(id));
+        this.downloadTextFile(`certificate-preview-${p.id}.txt`, text);
+        this.showToast("Preview", "Certificate preview downloaded.");
+      },
+
+      // ---------------------------
+      // WALLET + DOCS
+      // ---------------------------
+      renderWallet() {
+        const grid = document.getElementById('wallet-grid');
+        const empty = document.getElementById('wallet-empty');
+
+        const myItems = this.data.products.filter(p => this.state.wallet.includes(p.id));
+        document.getElementById("profile-owned").innerText = myItems.length;
+
+        if (myItems.length === 0) {
+          grid.innerHTML = "";
+          empty.classList.remove("hidden");
+          return;
+        }
+        empty.classList.add("hidden");
+
+        grid.innerHTML = myItems.map(p => `
+          <div class="mac-window p-6 flex flex-col md:flex-row gap-6 items-center">
+            <div class="w-full md:w-32 h-32 rounded-xl overflow-hidden">
+              <img src="${p.imgs?.[0] || p.img}" class="w-full h-full object-cover" />
+            </div>
+            <div class="flex-1 text-center md:text-left">
+              <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                <h3 class="font-display font-bold text-xl">${this.escapeHtml(p.title)}</h3>
+                <i class="fas fa-check-circle text-gold-500" title="Verified Owner"></i>
+              </div>
+              <p class="text-sm text-gray-500 mb-2">${this.escapeHtml(p.location)} • Tier ${p.tier} • ${this.escapeHtml(p.type)}</p>
+              <p class="text-sm text-gray-500 mb-4">Valuation: <span class="font-bold">${this.formatMoney(p.price)}</span></p>
+              <div class="flex gap-3 justify-center md:justify-start flex-wrap">
+                <button onclick="App.downloadCertificate(${p.id})" class="px-4 py-2 bg-black text-white rounded-lg text-xs font-bold uppercase hover:bg-gold-600 transition">View Certificate</button>
+                <button onclick="App.downloadDeed(${p.id})" class="px-4 py-2 border border-gray-200 rounded-lg text-xs font-bold uppercase hover:bg-gray-100">View Deed</button>
+                <button onclick="App.sellAsset(${p.id})" class="px-4 py-2 border border-red-200 bg-red-50 text-red-600 rounded-lg text-xs font-bold uppercase hover:bg-red-100">Sell Asset</button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      buildCertificateText(p, owned) {
+        const stamp = owned ? "CERTIFIED: OWNER VERIFIED" : "PREVIEW (NOT OWNED)";
+        const now = new Date().toISOString();
+        return [
+          "AMADA REALTY — CERTIFICATE OF OWNERSHIP",
+          "--------------------------------------",
+          `STATUS: ${stamp}`,
+          `ISSUED: ${now}`,
+          "",
+          `CLIENT: ${this.state.user.name}`,
+          `CLIENT ID: ${this.state.user.clientId}`,
+          "",
+          `ASSET: ${p.title}`,
+          `TYPE: ${p.type}`,
+          `LOCATION: ${p.location}`,
+          `TIER: ${p.tier}`,
+          `VALUATION: ${this.formatMoney(p.price)}`,
+          "",
+          "NOTES:",
+          "- This is a functional demo certificate generated in-browser.",
+          "- In production, this would be cryptographically signed and verifiable.",
+          "",
+          "AMADA — The Sovereign Standard"
+        ].join("\n");
+      },
+
+      buildDeedText(p) {
+        const now = new Date().toISOString();
+        return [
+          "AMADA REALTY — DIGITAL DEED (DEMO)",
+          "--------------------------------",
+          `ISSUED: ${now}`,
+          "",
+          `GRANTEE: ${this.state.user.name}`,
+          `CLIENT ID: ${this.state.user.clientId}`,
+          "",
+          `PROPERTY / ASSET: ${p.title}`,
+          `LOCATION: ${p.location}`,
+          `ASSET CLASS: ${p.type}`,
+          `TIER: ${p.tier}`,
+          `RECORDED VALUE: ${this.formatMoney(p.price)}`,
+          "",
+          "CLAUSES (DEMO):",
+          "1) This deed is a browser-generated demo artifact.",
+          "2) Ownership state is stored locally (localStorage).",
+          "3) Replace with real registry integration in production.",
+          "",
+          "AMADA — The Sovereign Standard"
+        ].join("\n");
+      },
+
+      downloadCertificate(id) {
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+        const text = this.buildCertificateText(p, true);
+        this.downloadTextFile(`AMADA-CERT-${id}.txt`, text);
+        this.logActivity("Document Downloaded", `Certificate • ${p.title}`);
+        this.saveState();
+      },
+
+      downloadDeed(id) {
+        const p = this.data.products.find(x => x.id === id);
+        if (!p) return;
+        const text = this.buildDeedText(p);
+        this.downloadTextFile(`AMADA-DEED-${id}.txt`, text);
+        this.logActivity("Document Downloaded", `Deed • ${p.title}`);
+        this.saveState();
+      },
+
+      generateAllDocs() {
+        const myItems = this.data.products.filter(p => this.state.wallet.includes(p.id));
+        if (myItems.length === 0) {
+          this.showToast("No Assets", "Secure an asset to generate documents.");
+          return;
+        }
+        myItems.forEach(p => {
+          const cert = this.buildCertificateText(p, true);
+          this.downloadTextFile(`AMADA-CERT-${p.id}.txt`, cert);
+        });
+        this.logActivity("Documents Generated", `Generated ${myItems.length} certificate(s).`);
+        this.showToast("Generated", "Certificates downloaded.");
+        this.saveState();
+      },
+
+      renderDocuments() {
+        const grid = document.getElementById("documents-grid");
+        const empty = document.getElementById("documents-empty");
+        const myItems = this.data.products.filter(p => this.state.wallet.includes(p.id));
+
+        if (myItems.length === 0) {
+          grid.innerHTML = "";
+          empty.classList.remove("hidden");
+          return;
+        }
+        empty.classList.add("hidden");
+
+        grid.innerHTML = myItems.map(p => `
+          <div class="mac-window p-4 flex items-center gap-4 hover:bg-white transition">
+            <div class="w-12 h-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center text-2xl">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <div class="min-w-0">
+              <h4 class="font-bold text-gray-900 truncate">Certificate - ${this.escapeHtml(p.title)}</h4>
+              <p class="text-xs text-gray-500">${this.escapeHtml(p.location)} • Tier ${p.tier} • ${this.formatMoney(p.price)}</p>
+            </div>
+            <div class="ml-auto flex gap-2">
+              <button onclick="App.downloadCertificate(${p.id})" class="text-gray-400 hover:text-black" title="Download Certificate"><i class="fas fa-download"></i></button>
+              <button onclick="App.downloadDeed(${p.id})" class="text-gray-400 hover:text-black" title="Download Deed"><i class="fas fa-file-signature"></i></button>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      // ---------------------------
+      // CONCIERGE CHAT (persisted)
+      // ---------------------------
+      renderChat() {
+        const history = document.getElementById("chat-history");
+
+        if (!this.state.chat || this.state.chat.length === 0) {
+          this.state.chat = [
+            { role: "agent", text: "Welcome back, Sir. Your chamber is secure. Which asset class are we hunting today?" }
+          ];
+        }
+
+        history.innerHTML = this.state.chat.map(m => {
+          if (m.role === "agent") {
+            return `
+              <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-gold-500 text-white flex-shrink-0 flex items-center justify-center text-xs"><i class="fas fa-user-tie"></i></div>
+                <div class="bg-gray-100 p-3 rounded-2xl rounded-tl-none max-w-[80%] text-sm">${this.escapeHtml(m.text)}</div>
+              </div>
+            `;
+          }
+          return `
+            <div class="flex items-start gap-3 flex-row-reverse">
+              <div class="bg-black text-white p-3 rounded-2xl rounded-tr-none max-w-[80%] text-sm">${this.escapeHtml(m.text)}</div>
+            </div>
+          `;
+        }).join("");
+
+        history.scrollTop = history.scrollHeight;
+        this.saveState();
+      },
+
+      quickConcierge(text) {
+        document.getElementById("chat-input").value = text;
+        this.sendMessage();
+      },
+
+      sendMessage() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        this.state.chat.push({ role: "user", text });
+        input.value = "";
+
+        // smart-ish reply (demo logic)
+        const reply = this.conciergeReply(text);
+        this.state.chat.push({ role: "agent", text: reply });
+
+        this.renderChat();
+        this.logActivity("Concierge", `Message sent: "${text.slice(0, 48)}${text.length > 48 ? "..." : ""}"`);
+        document.getElementById("notif-dot").classList.add("hidden");
+        this.saveState();
+      },
+
+      conciergeReply(text) {
+        const t = text.toLowerCase();
+        if (t.includes("upgrade") || t.includes("tier")) return "Understood. I can initiate a tier upgrade request. Please complete KYC in Portal and make a deposit (demo), then I’ll unlock higher inventory filters.";
+        if (t.includes("lekki")) return "Lekki inventory is currently live. Open Marketplace → Location: Lekki → Type: Rare Earth → Tier 2+ to see premium drops.";
+        if (t.includes("rare") || t.includes("earth") || t.includes("diamond") || t.includes("ruby")) return "Rare Earth it is. Tell me your budget band (₦100k to ₦5B+) and preferred location, and I’ll curate.";
+        if (t.includes("investment") || t.includes("bond") || t.includes("yield")) return "Investment allocations are available. If you want yield-focused offers, filter: Type → Investment, Sort → Featured, and set Tier 2+.";
+        return "Noted. I’m processing this immediately. Would you like Rare Earth (deeded jewels) or Investments (allocations) today?";
+      },
+
+      // ---------------------------
+      // SETTINGS + PROFILE
+      // ---------------------------
+      renderSettings() {
+        const u = this.state.user;
+
+        document.getElementById("settings-avatar").src = u.avatar;
+        document.getElementById("settings-name-title").innerText = u.name;
+        document.getElementById("settings-email-title").innerText = u.email;
+
+        document.getElementById("settings-name").value = u.name;
+        document.getElementById("settings-email").value = u.email;
+        document.getElementById("settings-phone").value = u.phone;
+        document.getElementById("settings-currency").value = u.currency;
+
+        // defaults for notifications in state
+        if (!this.state.notifications) {
+          this.state.notifications = { yield: true, drops: true, chat: true };
+        }
+        document.getElementById("notif-yield").checked = !!this.state.notifications.yield;
+        document.getElementById("notif-drops").checked = !!this.state.notifications.drops;
+        document.getElementById("notif-chat").checked = !!this.state.notifications.chat;
+
+        // sidebar mirrors
+        document.getElementById("sidebar-avatar").src = u.avatar;
+        document.getElementById("sidebar-name").innerText = u.name;
+        document.getElementById("profile-avatar").src = u.avatar;
+        document.getElementById("profile-name").innerText = u.name;
+        document.getElementById("profile-email").innerText = u.email;
+
+        this.saveState();
+      },
+
+      saveSettings(e) {
+        e.preventDefault();
+        const name = document.getElementById("settings-name").value.trim() || "Client";
+        const email = document.getElementById("settings-email").value.trim() || "client@example.com";
+        const phone = document.getElementById("settings-phone").value.trim() || "";
+        const currency = document.getElementById("settings-currency").value;
+
+        this.state.user.name = name;
+        this.state.user.email = email;
+        this.state.user.phone = phone;
+        this.state.user.currency = currency;
+
+        this.state.notifications = {
+          yield: document.getElementById("notif-yield").checked,
+          drops: document.getElementById("notif-drops").checked,
+          chat: document.getElementById("notif-chat").checked
+        };
+
+        this.logActivity("Settings Saved", "Profile and preferences updated.");
+        this.showToast("Saved", "Settings updated successfully.");
+        this.renderSettings();
+        this.renderProfile();
+        this.renderPortal();
+        this.renderOverview();
+        this.renderMarketplace();
+        this.saveState();
+      },
+
+      renderProfile() {
+        const u = this.state.user;
+        document.getElementById("profile-avatar").src = u.avatar;
+        document.getElementById("profile-name").innerText = u.name;
+        document.getElementById("profile-email").innerText = u.email;
+        document.getElementById("profile-tier").innerText = this.state.tier;
+        document.getElementById("profile-2fa").innerText = this.state.twoFA ? "ON" : "OFF";
+        document.getElementById("profile-id").innerText = u.clientId;
+        document.getElementById("profile-cash").innerText = this.formatMoney(this.state.cash);
+        document.getElementById("profile-owned").innerText = this.state.wallet.length;
+
+        document.getElementById("sidebar-name").innerText = u.name;
+        document.getElementById("sidebar-avatar").src = u.avatar;
+        document.getElementById("sidebar-tier").innerText = this.state.tier;
+
+        const pct = this.kycPercent();
+        document.getElementById("profile-kyc").innerText = pct + "%";
+
+        this.saveState();
+      },
+
+      copyClientId() {
+        const id = this.state.user.clientId;
+        navigator.clipboard?.writeText(id);
+        this.showToast("Copied", "Client ID copied to clipboard.");
+      },
+
+      randomizeAvatar() {
+        const n = Math.floor(Math.random() * 70) + 1;
+        this.state.user.avatar = `https://i.pravatar.cc/150?img=${n}`;
+        this.logActivity("Avatar Updated", "Profile avatar changed.");
+        this.renderSettings();
+        this.renderProfile();
+        this.saveState();
+      },
+
+      fakeChangePassword() {
+        this.showToast("Security", "Password reset link sent (demo).");
+        this.logActivity("Security", "Password reset requested.");
+        this.saveState();
+      },
+
+      // ---------------------------
+      // PORTAL (KYC + deposits + security)
+      // ---------------------------
+      kycPercent() {
+        const k = this.state.kyc;
+        const total = 3;
+        const done = (k.id ? 1 : 0) + (k.address ? 1 : 0) + (k.sof ? 1 : 0);
+        return Math.round((done / total) * 100);
+      },
+
+      renderPortal() {
+        const pct = this.kycPercent();
+        document.getElementById("kyc-bar").style.width = pct + "%";
+        document.getElementById("kyc-progress").innerText = pct + "%";
+        document.getElementById("portal-cash").innerText = this.formatMoney(this.state.cash);
+        document.getElementById("portal-tier").innerText = this.state.tier;
+        document.getElementById("twofa-status").innerText = this.state.twoFA ? "ON" : "OFF";
+        document.getElementById("profile-2fa").innerText = this.state.twoFA ? "ON" : "OFF";
+        this.saveState();
+      },
+
+      completeKYC(type) {
+        if (!["id", "address", "sof"].includes(type)) return;
+        this.state.kyc[type] = true;
+        const label = type === "id" ? "Government ID" : type === "address" ? "Proof of Address" : "Source of Funds";
+        this.showToast("Uploaded", `${label} submitted.`);
+        this.logActivity("KYC Updated", `${label} marked completed.`);
+        this.renderPortal();
+        this.renderProfile();
+        this.saveState();
+      },
+
+      makeDeposit() {
+        const input = document.getElementById("deposit-amount");
+        const amt = Number(String(input.value).replace(/[^\d]/g, "")) || 0;
+        if (amt <= 0) {
+          this.showToast("Invalid", "Enter a valid deposit amount.");
+          return;
+        }
+        this.showToast("Gateway", "Processing deposit (demo)...");
+        setTimeout(() => {
+          this.state.cash += amt;
+          input.value = "";
+          this.logActivity("Deposit", `Credited ${this.formatMoney(amt)} to cash balance.`);
+          this.renderPortal();
+          this.renderProfile();
+          this.renderOverview();
+          this.refreshCharts();
+          this.showToast("Success", "Deposit completed (demo).");
+          this.saveState();
+        }, 750);
+      },
+
+      requestTierUpgrade() {
+        const pct = this.kycPercent();
+        if (pct < 100) {
+          this.showToast("KYC Required", "Complete all KYC steps to request upgrade.");
+          return;
+        }
+        // upgrade tier by 1 (max 5)
+        const next = Math.min(5, this.state.tier + 1);
+        if (next === this.state.tier) {
+          this.showToast("Max Tier", "You are already at the top tier.");
+          return;
+        }
+        this.state.tier = next;
+        this.updateTier(next);
+        this.showToast("Upgrade", `Tier upgraded to Level ${next}.`);
+        this.logActivity("Tier Upgrade", `KYC verified. Tier moved to Level ${next}.`);
+        this.renderPortal();
+        this.renderProfile();
+        this.saveState();
+      },
+
+      toggle2FA() {
+        this.state.twoFA = !this.state.twoFA;
+        this.showToast("2FA", this.state.twoFA ? "2FA Enabled (demo)." : "2FA Disabled (demo).");
+        this.logActivity("Security", this.state.twoFA ? "2FA enabled." : "2FA disabled.");
+        this.renderPortal();
+        this.renderProfile();
+        this.saveState();
+      },
+
+      downloadRecoveryKit() {
+        const kit = [
+          "AMADA REALTY — RECOVERY KIT (DEMO)",
+          "---------------------------------",
+          `CLIENT: ${this.state.user.name}`,
+          `CLIENT ID: ${this.state.user.clientId}`,
+          "",
+          "RECOVERY KEYS:",
+          ...Array.from({ length: 8 }).map(() => "- " + Math.random().toString(36).slice(2, 12).toUpperCase()),
+          "",
+          "Keep this offline. This is a demo artifact."
+        ].join("\n");
+
+        this.downloadTextFile("amada-recovery-kit.txt", kit);
+        this.logActivity("Security", "Recovery kit generated.");
+        this.showToast("Generated", "Recovery kit downloaded.");
+        this.saveState();
+      },
+
+      // ---------------------------
+      // OVERVIEW + ACTIVITY + CHARTS
+      // ---------------------------
+      logActivity(title, detail) {
+        const item = {
+          at: new Date().toISOString(),
+          title,
+          detail
+        };
+        this.state.activity.unshift(item);
+        // cap
+        this.state.activity = this.state.activity.slice(0, 20);
+        this.renderActivity();
+        this.saveState();
+      },
+
+      clearActivity() {
+        this.state.activity = [];
+        this.renderActivity();
+        this.showToast("Cleared", "Activity log cleared.");
+        this.saveState();
+      },
+
+      renderActivity() {
+        const el = document.getElementById("activity-list");
+        if (!this.state.activity || this.state.activity.length === 0) {
+          el.innerHTML = `<div class="text-sm text-gray-500">No activity yet.</div>`;
+          return;
+        }
+        el.innerHTML = this.state.activity.map(a => {
+          const dt = new Date(a.at);
+          const stamp = dt.toLocaleString();
+          return `
+            <div class="flex items-start justify-between gap-4 p-4 bg-gray-50 rounded-xl">
+              <div class="min-w-0">
+                <p class="text-sm font-bold text-gray-900">${this.escapeHtml(a.title)}</p>
+                <p class="text-xs text-gray-600 mt-1">${this.escapeHtml(a.detail)}</p>
+              </div>
+              <div class="text-xs text-gray-400 whitespace-nowrap">${this.escapeHtml(stamp)}</div>
+            </div>
+          `;
+        }).join("");
+      },
+
+      computeTotals() {
+        const items = this.data.products.filter(p => this.state.wallet.includes(p.id));
+        const total = items.reduce((s, p) => s + p.price, 0);
+        const rare = items.filter(p => p.type === "Rare Earth").reduce((s, p) => s + p.price, 0);
+        const invest = items.filter(p => p.type === "Investment").reduce((s, p) => s + p.price, 0);
+        return { total, rare, invest };
+      },
+
+      renderOverview() {
+        const { total, rare, invest } = this.computeTotals();
+
+        document.getElementById("overview-total").innerText = this.formatMoney(total);
+        document.getElementById("overview-rare").innerText = this.formatMoney(rare);
+        document.getElementById("overview-invest").innerText = this.formatMoney(invest);
+        document.getElementById("overview-cash").innerText = this.formatMoney(this.state.cash);
+
+        // fake growth calculation
+        const base = Math.max(1, total);
+        const vol = (Math.random() * 4 + 0.3);
+        const sign = Math.random() > 0.4 ? 1 : -1;
+        const pct = (sign * vol).toFixed(1);
+        document.getElementById("overview-growth").innerText = (pct >= 0 ? "+" : "") + pct + "%";
+        document.getElementById("overview-growth").className =
+          `px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${pct >= 0 ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`;
+
+        this.renderActivity();
+        this.renderPortal();
+        this.renderProfile();
+
+        this.saveState();
+      },
+
+      randomMarketPulse() {
+        const msgs = [
+          "Market up 2.4% today.",
+          "Rare Earth demand rising in Ikoyi.",
+          "New Drop: sovereign-tier inventory detected.",
+          "Bond yield spread tightening.",
+          "Concierge: a private deal is waiting."
+        ];
+        return msgs[Math.floor(Math.random() * msgs.length)];
+      },
+
+      simulateMarket() {
+        // nudge prices slightly for demo (without mutating base too hard)
+        this.showToast("Market", "Volatility simulated.");
+        this.logActivity("Market", "Simulated market day executed.");
+
+        // adjust a “market series”
+        const last = this.state.marketSeries[this.state.marketSeries.length - 1] || 1450;
+        const delta = (Math.random() * 30) - 10;
+        const next = Math.max(900, Math.round(last + delta));
+        this.state.marketSeries = [...this.state.marketSeries.slice(1), next];
+
+        this.refreshCharts();
+        this.saveState();
+      },
+
+      initCharts() {
+        // Main chart
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(212, 175, 55, 0.2)');
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        this._mainChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+              label: 'Portfolio Value',
+              data: this.state.marketSeries,
+              borderColor: '#D4AF37',
+              backgroundColor: gradient,
+              borderWidth: 2,
+              tension: 0.4,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { x: { display: false }, y: { display: false } }
+          }
+        });
+
+        // Pie chart
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        const totals = this.computeTotals();
+        this._pieChart = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Rare Earth', 'Investments', 'Cash'],
+            datasets: [{
+              data: [totals.rare, totals.invest, this.state.cash],
+              backgroundColor: ['#111', '#D4AF37', '#e5e7eb'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            cutout: '75%',
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true } } }
+          }
+        });
+      },
+
+      refreshCharts() {
+        if (!this._mainChart || !this._pieChart) return;
+
+        // main
+        this._mainChart.data.datasets[0].data = this.state.marketSeries;
+        this._mainChart.update();
+
+        // pie
+        const totals = this.computeTotals();
+        this._pieChart.data.datasets[0].data = [totals.rare, totals.invest, this.state.cash];
+        this._pieChart.update();
+      },
+
+      // ---------------------------
+      // TOAST
+      // ---------------------------
+      showToast(title, msg) {
+        const toast = document.getElementById('toast');
+        toast.querySelector('h4').innerText = title;
+        toast.querySelector('p').innerText = msg;
+
+        // icon vibe
+        const iconWrap = document.getElementById("toast-icon");
+        if (/error|invalid|needed|insufficient/i.test(title + " " + msg)) {
+          iconWrap.className = "w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center";
+          iconWrap.innerHTML = `<i class="fas fa-triangle-exclamation"></i>`;
+        } else if (/processing|gateway|selling/i.test(title + " " + msg)) {
+          iconWrap.className = "w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center";
+          iconWrap.innerHTML = `<i class="fas fa-rotate"></i>`;
+        } else {
+          iconWrap.className = "w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center";
+          iconWrap.innerHTML = `<i class="fas fa-check"></i>`;
+        }
+
+        toast.classList.remove('translate-x-[200%]');
+        setTimeout(() => toast.classList.add('translate-x-[200%]'), 2800);
+      },
+
+      // ---------------------------
+      // DOWNLOAD UTILS
+      // ---------------------------
+      downloadTextFile(filename, text) {
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }
+    };
+
+    App.init();
+  </script>
+</body>
+</html>
